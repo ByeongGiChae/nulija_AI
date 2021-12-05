@@ -1,0 +1,85 @@
+
+- Nvidia Jetson Nano 4G
+- 모니터, 키보드, 마우스, 무선 랜카드
+- 64GB 이상 Micro SD 카드, SD 카드 리더기
+
+https://developer.nvidia.com/embedded/l4t/r32_release_v5.1/r32_release_v5.1/jeston_nano/jetson-nano-jp451-sd-card-image.zip
+
+SD카드 설치 
+
+카메라 동작 확인
+$ cd ~/Downloads
+$ git clone https://github.com/JetsonHacksNano/CSI-Camera.git
+
+$ gst-launch-1.0 nvarguscamerasrc sensor_id=0 ! \
+   'video/x-raw(memory:NVMM),width=3280, height=2464, framerate=21/1, format=NV12' ! \
+   nvvidconv flip-method=0 ! 'video/x-raw,width=960, height=720' ! \
+   nvvidconv ! nvegltransform ! nveglglessink -e
+
+opencv 
+sudo apt-get update
+sudo apt-get upgrade
+
+sudo apt-get install python2.7-dev python3-dev python-numpy python3-numpy
+
+sudo apt-get install libjpeg-dev libpng-dev libtiff-dev
+sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev v4l-utils 
+sudo apt-get install libxvidcore-dev libx264-dev libxine2-dev
+sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+sudo apt-get install libgtk-3-dev
+sudo apt-get install mesa-utils libgl1-mesa-dri libgtkgl2.0-dev libgtkglext1-dev
+sudo apt-get install libatlas-base-dev gfortran libeigen3-dev
+
+mkdir opencv
+cd opencv
+wget -O opencv.zip https://github.com/opencv/opencv/archive/3.4.0.zip
+wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/3.4.0.zip
+
+
+https://ultrakid.tistory.com/10 먼저 기존 설치된 opencv를 삭제한다.
+
+
+ROS 
+
+1. 패키지와 키 업데이트
+
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+sudo apt update
+ 
+2. ROS Melodic 설치
+sudo apt install ros-melodic-desktop-full
+ 
+3. rosdep 설치 및 초기화
+
+sudo apt-get install python-pip
+sudo pip install -U rosdep
+sudo rosdep init
+*** 아래 부분은 sudo가 붙지 않는다. (나중에 권한 문제가 생길 수 있다.)
+
+rosdep update
+
+$ gedit ~/.bashrc
+
+# 파일 제일 아래에 다음과 같은 내용 입력
+alias eb='gedit ~/.bashrc'
+alias sb='source ~/.bashrc'
+alias gs='git status'
+alias gp='git pull'
+alias cw='cd ~'
+alias cs='cd ~/src'
+alias cm='cd ~ && catkin_make'
+
+alias cma='catkin_make -DCATKIN_WHITELIST_PACKAGES=""'
+alias cop='catkin_make --only-pkg-with-deps'
+alias sds='source devel/setup.bash'
+alias axclient='rosrun actionlib axclient.py'
+
+# 종료 후 터미널 업데이트
+$ source ~/.bashrc
+
+
+$ roscore
+$ rosrun turtlesim turtlesim_node
+$ rosrun turtlesim turtle_teleop_key
+
